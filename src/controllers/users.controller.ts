@@ -7,13 +7,7 @@ export class UserController {
   public user = Container.get(UserService);
 
   public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const findAllUsersData: User[] = await this.user.findAllUser();
-
-      res.status(200).json({ data: findAllUsersData, message: 'findAll' });
-    } catch (error) {
-      next(error);
-    }
+    
   };
 
   public getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
