@@ -9,6 +9,7 @@ export const getAllProduct = `SELECT PP.id, PP.name,PP.slug, PP.initial_price,PP
 
 export const getProductByCat = `SELECT * FROM parents_product WHERE category_id=?`
 
+export const getDetailProduct = `SELECT P.id, P.name, P.imageUrl, P.description, P.rate, P.status, P.size, P.created_at, P.updated_at, P.deleted_at, P.ImageProduct,PP.slug, PP.initial_price, PP.discounted_price, PP.discount_percentage FROM products as P INNER JOIN parents_product as PP ON P.parentProductsId = PP.id WHERE PP.slug=?`
 // query user
 export const getUserEmail = `SELECT * from user WHERE email=? `
 //insert user 

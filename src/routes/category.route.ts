@@ -12,3 +12,4 @@ export class Categorys implements Routes {
     this.router.get('/category', this.category.getAllCategory);
   }
 }
+
