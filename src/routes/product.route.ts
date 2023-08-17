@@ -11,5 +11,6 @@ export class Products implements Routes {
 
   private initializeRoutes() {
     this.router.get('/products', this.products.getAllProduct);
+    this.router.get('/products/:slug', this.products.getProductByCat);
   }
 }
