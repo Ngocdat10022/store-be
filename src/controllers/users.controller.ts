@@ -1,21 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
-import { Container } from 'typedi';
-import { User } from '@interfaces/users.interface';
-import { UserService } from '@services/users.service';
-
+import db from '@/config/db';
+import { createtUser, getAllUser, getUserById, getUserEmail } from '@/query';
+import { User } from '@/interfaces/users.interface';
+import bcrypt from "bcryptjs";
+import moment from "moment"
 export class UserController {
-  public user = Container.get(UserService);
 
   public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    
+    try {
+      db.query(getAllUser,async(err:Error, data:any)=>{
+        if(err) res.status(409).json(err)
+        if(data) res.status(200).json(data)
+      })
+    } catch (error) {
+      next(error)
+    }
   };
 
   public getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userId = Number(req.params.id);
-      const findOneUserData: User = await this.user.findUserById(userId);
-
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
+      const id = req.params.id
+      db.query(getUserById,[id],async(err:Error, data:any)=>{
+        if(err) res.status(409).json(err)
+        if(data) res.status(200).json(data)
+      })
     } catch (error) {
       next(error);
     }
@@ -24,9 +32,21 @@ export class UserController {
   public createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userData: User = req.body;
-      const createUserData: User = await this.user.createUser(userData);
-
-      res.status(201).json({ data: createUserData, message: 'created' });
+      db.query(getUserEmail,[userData.email.trim()], async (err: Error, data: any)=>{
+        if (err) return res.status(409).json(err);
+        if(data.length){
+          res.status(409).json("user or email already exits");
+        } else{
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(userData.password, salt);
+          const birthday = new Date(userData.birthday)
+          const value = [userData.firstName, userData.lastName,birthday, userData.phoneNumber, userData.address, userData.gender, hashedPassword, userData.avartar, userData.username, userData.email];
+          db.query(createtUser, [value], (err:Error, data:any) => {
+            if (err) return res.status(409).json(err);
+            res.status(200).json("create user successfully");
+          });
+        }
+      })
     } catch (error) {
       next(error);
     }
@@ -34,11 +54,7 @@ export class UserController {
 
   public updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userId = Number(req.params.id);
-      const userData: User = req.body;
-      const updateUserData: User[] = await this.user.updateUser(userId, userData);
-
-      res.status(200).json({ data: updateUserData, message: 'updated' });
+      const idUser = req.params.id || req.userId
     } catch (error) {
       next(error);
     }
@@ -46,10 +62,7 @@ export class UserController {
 
   public deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userId = Number(req.params.id);
-      const deleteUserData: User[] = await this.user.deleteUser(userId);
 
-      res.status(200).json({ data: deleteUserData, message: 'deleted' });
     } catch (error) {
       next(error);
     }

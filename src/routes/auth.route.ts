@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { AuthController } from '@controllers/auth.controller';
 import { Routes } from '@interfaces/routes.interface';
-import { AuthMiddleware } from '@middlewares/auth.middleware';
 
 export class AuthRoute implements Routes {
+  public path = "/auth"
   public router = Router();
   public auth = new AuthController();
 
@@ -12,8 +12,7 @@ export class AuthRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post('/signup', this.auth.signUp);
-    this.router.post('/login', this.auth.logIn);
-    this.router.post('/logout', AuthMiddleware, this.auth.logOut);
+    this.router.post(`${this.path}/signup`, this.auth.signUp);
+    this.router.post(`${this.path}/login`, this.auth.logIn);
   }
 }
