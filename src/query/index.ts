@@ -16,9 +16,11 @@ export const getUserEmail = `SELECT * from user WHERE email=? `
 export const getAllUser = `SELECT * from user`
 
 export const getUserById = `SELECT * from user WHERE id=?`
-//insert user 
+
 export const insertUser ="INSERT INTO user(`first_name`,`last_name`,`email`,`password`) VALUES(?)"
 
 export const createtUser ="INSERT INTO user(`first_name`,`last_name`, `birthday`,`phone_number`,`address`,`gender`,`password`,`avartar`,`username`,`email`) VALUES(?)"
 
-export const updateUser = "UPDATE user SET `first_name =?`,`last_name =?`, `birthday =?`,`phone_number =?`,`address =?`,`gender =?`,`password =?`,`avartar =?`,`username =?`,`email =?`  WHERE `id`=?"
+export const updateUser = "UPDATE user SET `first_name`=? ,`last_name`=? , `birthday`=? ,`phone_number`=? ,`address`=? ,`gender`=? ,`password`=? ,`avartar`=? ,`username`=? ,`email`=?   WHERE `id`=?"
+
+export const deleteUser = "DELETE from user WHERE id=?"
