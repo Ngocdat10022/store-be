@@ -18,17 +18,24 @@ export class Product {
     public getProductByCat =  async (req:Request,res:Response,next:NextFunction)=>{
         try {
             const slug = req.params.slug
-            db.query(getCategoryBySlug, [slug.trim()], async(err:Error, data:any)=>{
-                if(err) res.status(409).json(err)
-                const catData:Category = data[0]
-                db.query(getProductByCat,[catData.idCat],async(err:Error, data:any)=>{
-                if(err) res.status(409).json(err)
+            console.log("slug",slug)
+            if(slug === "all") {
+                db.query(getAllProduct, async (err:Error,data:any) => {
+                    if (err) return res.status(409).json(err);
                     if (data.length) res.status(200).json(data);
                 })
-            })
+            }else{
+                db.query(getCategoryBySlug, [slug.trim()], async(err:Error, data:any)=>{
+                    if(err) res.status(409).json(err)
+                    const catData:Category = data[0]
+                    db.query(getProductByCat,[catData.idCat],async(err:Error, data:any)=>{
+                    if(err) res.status(409).json(err)
+                        if (data.length >= 0) res.status(200).json(data);
+                    })
+                })
+            }
         } catch (error) {
             next(error);
-            
         }
     }
 
@@ -42,6 +49,14 @@ export class Product {
             })
         } catch (error) {
             next(error);
+            
+        }
+    }
+
+    public buyProduct = async (req:Request,res:Response,next:NextFunction)=>{
+        try {
+            
+        } catch (error) {
             
         }
     }
